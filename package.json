@@ -1,0 +1,12 @@
+{
+  "name": "task-management-root",
+  "private": true,
+  "workspaces": ["src/shared", "src/server", "src/client"],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=src/server\" \"npm run dev --workspace=src/client\"",
+    "test": "npm run test --workspace=src/server && npm run test --workspace=src/client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

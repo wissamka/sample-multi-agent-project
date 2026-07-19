@@ -1,55 +1,45 @@
-// Types sourced from CONTRACTS.md S1 -- keep in sync with /src/shared/types.ts
-export type TaskStatus = 'todo' | 'in-progress' | 'done';
+// /src/shared/assistant-types.ts
+// Types for the personal-assistant domain. Task-tracker types live in ./types.ts.
 
-export interface Task {
-  id: string;
-  user_id: string;
-  title: string;
-  description: string | null;
-  status: TaskStatus;
-  due_date: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import type { Task } from './types';
 
-export interface AuthResponse {
-  token: string;
-  user: { id: string; email: string };
-}
-
-export interface ErrorResponse {
-  error: string;
-}
-
-// ── Assistant domain ── keep in sync with /src/shared/assistant-types.ts
+// ── Enums ───────────────────────────────────────────────────
 
 export type ContactRelationship = 'family' | 'coworker' | 'other';
 export type ContactSource = 'onboarding' | 'learned' | 'manual';
+
 export type MemoryCategory = 'fact' | 'preference' | 'contact' | 'note';
 export type MemorySource = 'onboarding' | 'email' | 'manual';
+
 export type EmailKind = 'plain' | 'calendar_invite' | 'newsletter';
 export type EmailClassification = 'personal' | 'work' | 'newsletter' | 'question' | 'other';
 export type ClassificationSource = 'heuristic' | 'llm';
 export type EmailStatus = 'received' | 'processed' | 'error';
+
 export type EventCategory = 'personal' | 'work' | 'unknown';
 export type EventStatus = 'proposed' | 'confirmed' | 'declined';
 export type AttendeeAddedBy = 'organizer' | 'rule' | 'user';
+
 export type RuleTrigger = 'personal_event' | 'work_event' | 'unknown_sender';
 export type RuleAction = 'add_family' | 'add_coworkers' | 'ask_user' | 'auto_accept' | 'auto_decline';
 export type RuleMode = 'auto' | 'ask';
+
 export type ActionType = 'invite_proposal' | 'question' | 'memory_added' | 'email_filed' | 'rule_applied';
 export type ActionStatus = 'pending' | 'approved' | 'rejected' | 'auto_applied' | 'info';
+
 export type BriefTrigger = 'manual' | 'scheduled';
 export type BriefGeneratedBy = 'heuristic' | 'llm';
+
+// ── Entities ────────────────────────────────────────────────
 
 export interface AgentProfile {
   user_id: string;
   display_name: string;
   timezone: string;
   agent_address: string;
-  brief_hour: number;
+  brief_hour: number;      // 0–23, local hour the scheduled brief fires
   interests: string[];
-  onboarded_at: string | null;
+  onboarded_at: string | null; // null = onboarding wizard not completed
   created_at: string;
   updated_at: string;
 }
@@ -77,10 +67,10 @@ export interface Memory {
 
 export interface InvitePayload {
   title: string;
-  start_at: string;
+  start_at: string;       // ISO-8601 datetime
   end_at?: string | null;
   location?: string | null;
-  organizer?: string | null;
+  organizer?: string | null; // organizer email
 }
 
 export interface InboundEmail {
@@ -159,7 +149,7 @@ export interface BriefContent {
 export interface Brief {
   id: string;
   user_id: string;
-  brief_date: string;
+  brief_date: string; // ISO-8601 date
   trigger: BriefTrigger;
   content: BriefContent;
   prose: string;
@@ -167,16 +157,25 @@ export interface Brief {
   created_at: string;
 }
 
+// ── Request bodies ──────────────────────────────────────────
+
 export interface ContactInput {
   name: string;
   email: string;
 }
 
 export interface OnboardingRequest {
-  display_name: string;
-  timezone: string;
+  display_name: string;      // 1–100 chars
+  timezone: string;          // IANA zone, e.g. "America/New_York"
   family: ContactInput[];
   coworkers: ContactInput[];
+  brief_hour?: number;       // default 8
+  interests?: string[];
+}
+
+export interface UpdateProfileRequest {
+  display_name?: string;
+  timezone?: string;
   brief_hour?: number;
   interests?: string[];
 }
@@ -190,8 +189,123 @@ export interface SimulateEmailRequest {
   invite_payload?: InvitePayload;
 }
 
+export interface CreateRuleRequest {
+  name: string;
+  trigger: RuleTrigger;
+  action: RuleAction;
+  mode?: RuleMode;
+}
+
+export interface UpdateRuleRequest {
+  name?: string;
+  mode?: RuleMode;
+  enabled?: boolean;
+  position?: number;
+}
+
+export interface CreateMemoryRequest {
+  category: MemoryCategory;
+  content: string;
+}
+
+export interface UpdateMemoryRequest {
+  category?: MemoryCategory;
+  content?: string;
+}
+
+export interface CreateContactRequest {
+  name: string;
+  email: string;
+  relationship: ContactRelationship;
+}
+
+export interface UpdateContactRequest {
+  name?: string;
+  email?: string;
+  relationship?: ContactRelationship;
+}
+
+export interface CreateEventRequest {
+  title: string;
+  start_at: string;
+  end_at?: string | null;
+  location?: string | null;
+  category?: EventCategory;
+}
+
+export interface UpdateEventRequest {
+  title?: string;
+  start_at?: string;
+  end_at?: string | null;
+  location?: string | null;
+  status?: EventStatus;
+  attendees?: Attendee[];
+}
+
+// ── Response envelopes ──────────────────────────────────────
+
+export interface ProfileResponse {
+  profile: AgentProfile | null;
+}
+
+export interface ContactListResponse {
+  contacts: Contact[];
+}
+
+export interface ContactResponse {
+  contact: Contact;
+}
+
+export interface MemoryListResponse {
+  memories: Memory[];
+}
+
+export interface MemoryResponse {
+  memory: Memory;
+}
+
+export interface EmailListResponse {
+  emails: InboundEmail[];
+}
+
+export interface EmailResponse {
+  email: InboundEmail;
+}
+
 export interface SimulateEmailResponse {
   email: InboundEmail;
   event: CalendarEvent | null;
   actions: AgentAction[];
+}
+
+export interface EventListResponse {
+  events: CalendarEvent[];
+}
+
+export interface EventResponse {
+  event: CalendarEvent;
+}
+
+export interface RuleListResponse {
+  rules: InviteRule[];
+}
+
+export interface RuleResponse {
+  rule: InviteRule;
+}
+
+export interface ActionListResponse {
+  actions: AgentAction[];
+}
+
+export interface ActionResponse {
+  action: AgentAction;
+}
+
+export interface BriefResponse {
+  brief: Brief;
+}
+
+export interface BriefListResponse {
+  briefs: Brief[];
 }

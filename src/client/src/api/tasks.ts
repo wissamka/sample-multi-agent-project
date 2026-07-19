@@ -11,7 +11,7 @@ export function getTask(id: string) {
 
 export function createTask(data: {
   title: string;
-  description?: string;
+  description?: string | null;
   status?: string;
   due_date?: string | null;
 }) {

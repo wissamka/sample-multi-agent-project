@@ -1,5 +1,5 @@
 {
-  "name": "task-management-root",
+  "name": "personal-assistant-root",
   "private": true,
   "workspaces": ["src/shared", "src/server", "src/client"],
   "scripts": {

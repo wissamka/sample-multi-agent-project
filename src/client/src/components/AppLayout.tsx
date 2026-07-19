@@ -33,7 +33,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <h1 className="text-lg font-bold">Personal Agent</h1>
+          <h1 className="text-lg font-bold">Personal Assistant</h1>
           <nav className="flex gap-1">
             {NAV_ITEMS.map((item) => (
               <NavLink

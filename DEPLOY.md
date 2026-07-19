@@ -8,7 +8,10 @@ Postgres — these steps use Neon from the Vercel Marketplace.
 ## One-time setup
 
 1. **Import the project.** vercel.com → Add New… → Project → import
-   `wissamka/sample-multi-agent-project`. Pick the branch to deploy
+   `wissamka/personal-assistant` (rename the repo first in GitHub →
+   Settings → General → Rename; until then it still imports under
+   `wissamka/sample-multi-agent-project`, and GitHub redirects the old
+   name after renaming). Pick the branch to deploy
    (`claude/personal-assistant-service-1epi5g`, or `main` after merging).
    Framework preset: **Other** — `vercel.json` drives the build and routing.
 

@@ -95,7 +95,7 @@ describe('TaskModal', () => {
     await user.click(screen.getByRole('button', { name: /create/i }));
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('/tasks', expect.objectContaining({
+      expect(mockFetch).toHaveBeenCalledWith('/api/tasks', expect.objectContaining({
         method: 'POST',
         body: expect.stringContaining('New Task'),
       }));

@@ -1,4 +1,4 @@
-const BASE = ''; // proxied via vite to :3000
+const BASE = '/api'; // dev: vite proxy strips /api → :3000; prod: Vercel routes /api/* to the serverless Express app
 
 function getToken(): string | null {
   return localStorage.getItem('token');

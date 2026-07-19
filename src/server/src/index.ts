@@ -33,7 +33,8 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-if (process.env.NODE_ENV !== 'test') {
+// On Vercel the app is invoked per-request by api/index.ts instead of listening.
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   const port = process.env.PORT || 3000;
   app.listen(port, () => {
     console.log(`Server listening on port ${port}`);

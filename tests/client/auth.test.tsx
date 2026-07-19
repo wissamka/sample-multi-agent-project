@@ -45,7 +45,7 @@ describe('LoginPage', () => {
     await user.type(screen.getByLabelText(/password/i), 'password123');
     await user.click(screen.getByRole('button', { name: /login/i }));
 
-    expect(mockFetch).toHaveBeenCalledWith('/auth/login', expect.objectContaining({
+    expect(mockFetch).toHaveBeenCalledWith('/api/auth/login', expect.objectContaining({
       method: 'POST',
       body: JSON.stringify({ email: 'a@b.com', password: 'password123' }),
     }));

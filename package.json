@@ -4,7 +4,8 @@
   "workspaces": ["src/shared", "src/server", "src/client"],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=src/server\" \"npm run dev --workspace=src/client\"",
-    "test": "npm run test --workspace=src/server && npm run test --workspace=src/client"
+    "test": "npm run test --workspace=src/server && npm run test --workspace=src/client",
+    "db:migrate": "node scripts/migrate.mjs"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
